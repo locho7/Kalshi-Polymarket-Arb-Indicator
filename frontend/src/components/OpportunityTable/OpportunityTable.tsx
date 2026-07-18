@@ -1,7 +1,7 @@
-import type { OpportunityType } from "../../data/mockOpportunities";
-import { mockOpportunities } from "../../data/mockOpportunities.ts";
+import type { OpportunityType } from "../../data/opportunityType.ts";
 import { priceDifference } from "../../utils/priceDifference.ts";
 import { findTrade } from "../../utils/findTrade.ts";
+import { useState } from 'react';
 
 function TableHeading(props: { text: string }) {
     return (
@@ -20,6 +20,19 @@ function TableData( props: { text: string }) {
 }
 
 function OpportunityTable() {
+    const [opportunityData, setOpportunityData] = useState([]);
+
+    async function fetchOpportunityData() {
+        try {
+            const response = await fetch("http://127.0.0.1:8000/get-opportunities");
+            const data = await response.json();
+            setOpportunityData(data);
+        } catch (error) {
+            throw new Error("Error fetching opportunity data");
+        }
+    }
+    fetchOpportunityData();
+
     return (
     <div className="m-5 bg-background1 rounded-xl
          border-1 border-border overflow-hidden">
@@ -35,7 +48,7 @@ function OpportunityTable() {
                 <TableHeading text="Price Difference" />
                 <TableHeading text="Last Updated" />
             </tr>
-            {mockOpportunities.map((opportunity: OpportunityType) => {
+            {opportunityData.map((opportunity: OpportunityType) => {
                 return (
                     <tr>
                         <TableData text={opportunity.title} />
