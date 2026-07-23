@@ -1,5 +1,5 @@
 export type OpportunityType = {
-    id: number;
+    id: string;
     title: string;
     category: string;
     kalshiYes: number;

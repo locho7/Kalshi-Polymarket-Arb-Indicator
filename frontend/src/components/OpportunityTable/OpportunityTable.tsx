@@ -20,7 +20,7 @@ function TableData( props: { text: string }) {
 }
 
 function OpportunityTable() {
-    const [opportunityData, setOpportunityData] = useState([]);
+    const [opportunityData, setOpportunityData] = useState<OpportunityType[]>([]);
 
     async function fetchOpportunityData() {
         try {
@@ -31,7 +31,7 @@ function OpportunityTable() {
             throw new Error("Error fetching opportunity data");
         }
     }
-    fetchOpportunityData();
+    //fetchOpportunityData();
 
     return (
     <div className="m-5 bg-background1 rounded-xl
@@ -50,7 +50,7 @@ function OpportunityTable() {
             </tr>
             {opportunityData.map((opportunity: OpportunityType) => {
                 return (
-                    <tr>
+                    <tr key={opportunity.id}>
                         <TableData text={opportunity.title} />
                         <TableData text={findTrade(opportunity)} />
                         <TableData text={`${Math.trunc(100*priceDifference(opportunity))}¢`} />
