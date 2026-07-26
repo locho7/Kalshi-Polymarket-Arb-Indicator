@@ -51,3 +51,4 @@ opportunities = [
 @app.get("/get-opportunities")
 def get_opportunities():
     return opportunities
+
