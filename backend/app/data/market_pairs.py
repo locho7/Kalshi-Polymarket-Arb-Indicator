@@ -28,5 +28,5 @@ market_pairs = [
         "kalshi_market_ticker": "KXNBA-27-OKC",
         "polymarket_slug": "nba-2027-champion",
         "polymarket_id": "2243320"
-    }
+    },
 ]
