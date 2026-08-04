@@ -16,3 +16,5 @@ class Opportunity(BaseModel):
 
     price_difference: Optional[float]
     best_trade: str
+
+    last_updated: str
