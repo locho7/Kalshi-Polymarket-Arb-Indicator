@@ -1,7 +1,5 @@
 import type { OpportunityType } from "../../data/opportunityType.ts";
-import { priceDifference } from "../../utils/priceDifference.ts";
-import { findTrade } from "../../utils/findTrade.ts";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function TableHeading(props: { text: string }) {
     return (
@@ -31,7 +29,12 @@ function OpportunityTable() {
             throw new Error("Error fetching opportunity data");
         }
     }
-    //fetchOpportunityData();
+
+    useEffect(() => {
+        fetchOpportunityData()
+        const intervalID = setInterval(fetchOpportunityData, 30000);
+        return () => clearInterval(intervalID)
+    }, [])
 
     return (
     <div className="m-5 bg-background1 rounded-xl
@@ -49,12 +52,13 @@ function OpportunityTable() {
                 <TableHeading text="Last Updated" />
             </tr>
             {opportunityData.map((opportunity: OpportunityType) => {
+                if (opportunity.price_difference === null) return
                 return (
                     <tr key={opportunity.id}>
                         <TableData text={opportunity.title} />
-                        <TableData text={findTrade(opportunity)} />
-                        <TableData text={`${Math.trunc(100*priceDifference(opportunity))}¢`} />
-                        <TableData text={opportunity.lastUpdated} />
+                        <TableData text={opportunity.best_trade} />
+                        <TableData text={`${Math.trunc(100*opportunity.price_difference)}¢`} />
+                        <TableData text={opportunity.last_updated} />
                     </tr>
                 )
             })}

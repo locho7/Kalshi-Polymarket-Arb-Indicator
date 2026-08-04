@@ -28,7 +28,7 @@ def get_opportunities() -> list[Opportunity]:
         p_no = float(outcome_prices[1])
 
         difference = find_price_difference(k_yes, k_no, p_yes, p_no)
-        if difference is None or difference < 0.01:
+        if difference is None: #or difference < 0.01:
             continue
 
         trade = find_trade(k_yes, k_no, p_yes, p_no)
