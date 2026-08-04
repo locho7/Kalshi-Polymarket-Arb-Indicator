@@ -1,2 +1,17 @@
+# Python
+**/__pycache__/
 __pycache__/
 *.pyc
+.venv/
+venv/
+
+# Node / React
+frontend/node_modules/
+frontend/dist/
+
+# Environment variables
+.env
+
+# Codex / local assistant metadata
+.agents/
+.codex/

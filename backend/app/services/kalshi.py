@@ -11,17 +11,17 @@ def fetch_event_kalshi(event_ticker):
 
 def print_markets_kalshi(event_ticker):
     event_data = fetch_event_kalshi(event_ticker)
-    for market in event_data["event"]["markets"]:
-        print(f" Ticker: {market['ticker']}")
-        print(f" Title: {market['yes_sub_title']}")
-        print(f" YES ask: {market['yes_ask_dollars']}")
-        print(f" NO ask: {market['no_ask_dollars']}")
-        print()
+    if event_data: 
+        for market in event_data["event"]["markets"]:
+            print(f" Ticker: {market['ticker']}")
+            print(f" Title: {market['yes_sub_title']}")
+            print(f" YES ask: {market['yes_ask_dollars']}")
+            print(f" NO ask: {market['no_ask_dollars']}")
+            print()
 
 def get_market_kalshi(event_ticker, market_ticker):
     event_data = fetch_event_kalshi(event_ticker)
-    for market in event_data["event"]["markets"]:
-        if market["ticker"] == market_ticker:
-            return market
-        
-print_markets_kalshi("kxnba-27")
+    if event_data:
+        for market in event_data["event"]["markets"]:
+            if market["ticker"] == market_ticker:
+                return market
