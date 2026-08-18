@@ -37,7 +37,3 @@ class MarketCache:
 
     def clear(self) -> None:
         self._data.clear()
-        
-        
-
-

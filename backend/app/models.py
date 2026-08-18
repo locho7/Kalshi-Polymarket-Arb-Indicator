@@ -1,7 +1,10 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class Opportunity(BaseModel):
+from sqlalchemy import Column, String, Integer
+from app.database import Base
+
+class OpportunityBase(BaseModel):
     id: str
     title: str
 
@@ -18,3 +21,18 @@ class Opportunity(BaseModel):
     best_trade: str
 
     last_updated: str
+
+class MarketPairBase(BaseModel):
+    kalshi_event_ticker: str
+    kalshi_market_ticker: str
+    polymarket_slug: str
+    polymarket_id: str
+
+class Pair(Base):
+    __tablename__ = 'pair'
+
+    id = Column(Integer, primary_key=True)
+    kalshi_event_ticker = Column(String, index=True)
+    kalshi_market_ticker = Column(String, index=True, unique=True)
+    polymarket_slug = Column(String, index=True)
+    polymarket_id = Column(String, index=True, unique=True)

@@ -1,22 +1,38 @@
-from app.math import (find_price_difference, 
-                      find_trade)
+import json
+from app import models
+
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+from typing import List, Annotated
+
+from datetime import datetime
+from operator import attrgetter
+from app.utils import *
 from app.market_service import (get_polymarket_market, 
                                 get_kalshi_market)
-from app.data.market_pairs import market_pairs
-from app.models import Opportunity
-from operator import attrgetter
-from datetime import datetime
-import json
 
-def get_opportunities() -> list[Opportunity]:
+def get_kalshi_events(db: Session):
+    stmt = select(models.Pair.kalshi_event_ticker).distinct()
+    return set(db.scalars(stmt).all())
+
+def get_polymarket_slugs(db: Session):
+    stmt = select(models.Pair.polymarket_slug).distinct()
+    return set(db.scalars(stmt).all())
+
+def build_opportunities(market_pairs, events, slugs):
     opportunities = []
-
     for pair in market_pairs:
-        kalshi_market = get_kalshi_market(pair["kalshi_event_ticker"], 
-                                                  pair["kalshi_market_ticker"])
-        polymarket_market = get_polymarket_market(pair["polymarket_slug"],
-                                                          pair["polymarket_id"])
-        
+        kalshi_market = get_kalshi_market(
+            events,
+            pair.kalshi_event_ticker, 
+            pair.kalshi_market_ticker
+        )
+        polymarket_market = get_polymarket_market(
+            slugs,
+            pair.polymarket_slug,
+            pair.polymarket_id
+        )
+
         if kalshi_market is None or polymarket_market is None:
             continue
 
@@ -28,12 +44,12 @@ def get_opportunities() -> list[Opportunity]:
         p_no = float(outcome_prices[1])
 
         difference = find_price_difference(k_yes, k_no, p_yes, p_no)
-        if difference is None: #or difference < 0.01:
+        if difference is None:
             continue
 
         trade = find_trade(k_yes, k_no, p_yes, p_no)
 
-        opportunities.append(Opportunity(
+        opportunities.append(models.OpportunityBase(
             id=f"{kalshi_market['ticker']}:{polymarket_market['id']}",
             title=f"{polymarket_market['question']}",
             kalshi_market_ticker=kalshi_market['ticker'],
@@ -48,9 +64,6 @@ def get_opportunities() -> list[Opportunity]:
             last_updated=datetime.now().strftime("%H:%M:%S")
         ))
 
-    return opportunities
-
-def build_opportunities() -> list[Opportunity]:
-    opportunities = get_opportunities()
     opportunities.sort(key=attrgetter('price_difference'), reverse=True)
+
     return opportunities
