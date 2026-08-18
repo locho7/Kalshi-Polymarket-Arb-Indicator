@@ -1,6 +1,6 @@
 from app.api_clients.kalshi import fetch_event
 from app.api_clients.polymarket import fetch_slug
-from app.cache.market_cache import MarketCache
+from app.market_cache import MarketCache
 
 ttl_seconds = 30
 kalshi_cache = MarketCache(ttl_seconds)
@@ -28,6 +28,8 @@ def refresh_polymarket_cache(slugs) -> None:
 
 
 def get_kalshi_market(events, event, market) -> dict | None:
+    event = event.upper()
+    market = market.upper()
     markets = kalshi_cache.get(event)
     
     if markets is None:
@@ -41,6 +43,8 @@ def get_kalshi_market(events, event, market) -> dict | None:
 
 
 def get_polymarket_market(slugs, slug, id) -> dict | None:
+    slug = slug.lower()
+    id = str(id)
     markets = polymarket_cache.get(slug)
 
     if markets is None:

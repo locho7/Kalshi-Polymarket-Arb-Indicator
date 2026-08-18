@@ -32,7 +32,7 @@ def build_opportunities(market_pairs, events, slugs):
             pair.polymarket_slug,
             pair.polymarket_id
         )
-        
+
         if kalshi_market is None or polymarket_market is None:
             continue
 

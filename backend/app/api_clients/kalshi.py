@@ -3,16 +3,17 @@ import requests
 def fetch_event(event: str) -> list:
     markets = []
     url = f"https://external-api.kalshi.com/trade-api/v2/events/{event.upper()}"
-    response = requests.get(url, params = {"with_nested_markets": True})
-    if response.status_code == 200:
+    try: 
+        response = requests.get(url, params = {"with_nested_markets": True}, timeout=10)
         event_data = response.json()
         for market in event_data['event']['markets']:
            markets.append(market)
-    else:
-        print(f"Error fetching Kalshi Event: {response.status_code}")
-    return markets
+        return markets
+    except:
+        print(f"Error fetching Kalshi Event")
+        return []
 
-def print_markets_kalshi(event) -> None:
+def print_markets_kalshi(event: str) -> None:
     markets = fetch_event(event) 
     for market in markets:
         print(f" - Market Ticker: {market['ticker']}")
